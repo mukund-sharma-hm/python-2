@@ -7,11 +7,13 @@
 #	4c. WAF to return the employee name in each Business Unit with top most salary
 #	4d. WAF Delete the Record of the Employee name from the Excel File with the least salary.
 #	4e. WAF to Update the Salary Details of an Employee in the Excel File
-    
+
+import random  
 from faker import Faker
 import openpyxl
-import random
+import decorator
 
+@decorator.logger
 def fake_employee_data():
     """function to create fake data"""
     fake = Faker()
@@ -19,7 +21,7 @@ def fake_employee_data():
     ws = wb.active
 
     ws.append(["Employee ID", "Employee Name", "Email", "Business Unit", "Salary"])
-    for i in range(random.randint(50,100)):
+    for _ in range(random.randint(50,100)):
         ws.append([
             fake.uuid4(),
             fake.name(),
@@ -28,8 +30,9 @@ def fake_employee_data():
             fake.random_int(min=25000, max=400000)
         ])
     wb.save("Employee_Details.xlsx")
-fake_employee_data();
+fake_employee_data()
 
+@decorator.logger
 def get_emp_with_max_salary():
     wb = openpyxl.load_workbook('Employee_Details.xlsx')
     ws = wb.active
@@ -38,6 +41,7 @@ def get_emp_with_max_salary():
     print(max_salary)
 get_emp_with_max_salary()
 
+@decorator.logger
 def business_unit_with_highest_aggregated_salary():
 
     aggragated_salaries = {}
@@ -67,7 +71,7 @@ def business_unit_with_highest_aggregated_salary():
 
 business_unit_with_highest_aggregated_salary()
 
-
+@decorator.logger
 def employee_with_highest_salary_per_bu():
     wb = openpyxl.load_workbook("Employee_Details.xlsx")
     ws = wb.active
@@ -89,6 +93,7 @@ def employee_with_highest_salary_per_bu():
 
 employee_with_highest_salary_per_bu()
 
+@decorator.logger
 def delete_employee_with_least_salary():
     wb = openpyxl.load_workbook("Employee_Details.xlsx")
     ws = wb.active
@@ -108,6 +113,7 @@ def delete_employee_with_least_salary():
         
 delete_employee_with_least_salary()
 
+@decorator.logger
 def update_employee_salary(emp_id, new_salary):
         wb = openpyxl.load_workbook("employee_details.xlsx")
         ws = wb.active
